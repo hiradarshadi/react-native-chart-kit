@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import { Dimensions } from 'react-native';
 import {
   LinearGradient,
   Line,
@@ -7,6 +7,9 @@ import {
   Defs,
   Stop
 } from 'react-native-svg'
+
+let screenWidth = Dimensions.get('window').width;
+let screenHeight = Dimensions.get('window').height;
 
 class AbstractChart extends Component {
   renderHorizontalLines = config => {
@@ -20,8 +23,8 @@ class AbstractChart extends Component {
           x2={width}
           y2={(height / 4 * i) + paddingTop}
           stroke={this.props.chartConfig.color(0.2)}
-          strokeDasharray="5, 10"
           strokeWidth={1}
+          strokeOpacity={0.35}
         />
       )
     })
@@ -29,17 +32,17 @@ class AbstractChart extends Component {
 
   renderHorizontalLabels = config => {
     const { count, data, height, paddingTop, paddingRight, yLabelsOffset = 12 } = config
-	var decimalPlaces = (this.props.chartConfig.decimalPlaces !== undefined) ? this.props.chartConfig.decimalPlaces : 2;
     return [...new Array(count)].map((_, i) => {
       return (
         <Text
           key={Math.random()}
-          x={paddingRight - yLabelsOffset}
+          x={paddingRight - yLabelsOffset + 5}
           textAnchor="end"
-          y={(height * 3 / 4) - ((height - paddingTop) / count * i) + 12}
-          fontSize={12}
-          fill={this.props.chartConfig.color(0.5)}
-        >{count === 1 ? data[0].toFixed(2) : (((Math.max(...data) - Math.min(...data)) / (count - 1)) * i + Math.min(...data)).toFixed(2)}
+          y={(height * 3 / 4) - ((height - paddingTop) / count * i) + yLabelsOffset}
+          fontSize={10}
+          fontFamily="Shabnam"
+          fill='white'
+        >{(((Math.max(...data) - Math.min(...data)) / (count - 1) * i) + Math.min(...data)).toFixed(2)}
         </Text>
       )
     })
@@ -47,7 +50,7 @@ class AbstractChart extends Component {
 
   renderVerticalLabels = config => {
     const { labels = [], width, height, paddingRight, paddingTop, horizontalOffset = 0 } = config
-    const fontSize = 12
+    const fontSize = 10
     return labels.map((label, i) => {
       return (
         <Text
@@ -55,7 +58,8 @@ class AbstractChart extends Component {
           x={((width - paddingRight) / labels.length * (i)) + paddingRight + horizontalOffset}
           y={(height * 3 / 4) + paddingTop + (fontSize * 2)}
           fontSize={fontSize}
-          fill={this.props.chartConfig.color(0.5)}
+          fill='white'
+          fontFamily="Shabnam"
           textAnchor="middle"
         >{label}
         </Text>
@@ -74,7 +78,6 @@ class AbstractChart extends Component {
           x2={Math.floor((width - paddingRight) / data.length * (i) + paddingRight)}
           y2={height - (height / 4) + paddingTop}
           stroke={this.props.chartConfig.color(0.2)}
-          strokeDasharray="5, 10"
           strokeWidth={1}
         />
       )
